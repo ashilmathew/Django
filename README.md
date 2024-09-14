@@ -5,19 +5,7 @@ Django signals are executed synchronously by default.
 When a signal is sent, its corresponding receivers (signal handlers) are executed immediately and sequentially, meaning that they block the flow of the program until they finish executing.
 code:
 
-from django.db.models.signals import post_save
-
-from django.dispatch import receiver
-
-from .models import MyModel
-
-@receiver(post_save, sender=MyModel)
-
-def my_handler(sender, instance, **kwargs):
-    
-    print("Signal received")
-
-# When an instance of MyModel is saved, this signal will run synchronously.
+https://github.com/ashilmathew/Django/blob/main/q1.py
 
 ![image](https://github.com/user-attachments/assets/ded12a35-5af7-4be2-b0ee-f1995a007044)
 
@@ -26,46 +14,12 @@ Django signals are executed synchronously in the same thread that sent them unle
 
 code:
 
-import threading
-
-from django.db.models.signals import post_save
-
-from django.dispatch import receiver
-
-from .models import MyModel
-
-@receiver(post_save, sender=MyModel)
-
-def my_handler(sender, instance, **kwargs):
-
-    print(f"Signal running in thread: {threading.current_thread().name}")
-    
-my_instance = MyModel.objects.create(field1="value")
-
-# Output will be:
-# Signal running in thread: MainThread (or whatever the thread is)
-
-![image](https://github.com/user-attachments/assets/33d30398-17f7-4896-be77-bc393eeec2c9)
+https://github.com/ashilmathew/Django/blob/main/q2.py
 
 By default, Django signals do not run in the same database transaction as the caller.
 This means that if an exception occurs in a signal handler, it will not automatically cause the surrounding database transaction to be rolled back, unless explicitly handled.
 If you want a signal to participate in the same database transaction as the caller, you need to wrap the signal handler logic inside a database transaction using transaction.atomic().
 
 code:
-from django.db import transaction
 
-from django.db.models.signals import post_save
-
-from django.dispatch import receiver
-
-from .models import MyModel
-
-@receiver(post_save, sender=MyModel)
-
-def my_handler(sender, instance, **kwargs):
-
-    with transaction.atomic():
-    
-        print("Signal running within a transaction")
-        
-        # Your transaction logic here
+https://github.com/ashilmathew/Django/blob/main/q3.py
